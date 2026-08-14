@@ -27,9 +27,15 @@
                 <p>Días para vencer: {{ producto.dias_para_vencer }}</p>
             {% endif %}
 
-            {% if session.get('usuario_id') %}
             <hr>
-            <div>
+            <div class="d-flex gap-2">
+                {% if session.get('usuario_rol') == 'cliente' %}
+                <form action="{{ url_for('agregar_carrito', producto_id=producto.id) }}" method="POST">
+                    <button type="submit" class="btn btn-primary">🛍️ Agregar al carrito</button>
+                </form>
+                {% endif %}
+                
+                {% if session.get('usuario_rol') == 'admin' %}
                 <a href="{{ url_for('editar_producto', producto_id=producto.id) }}" class="btn btn-outline-primary">
                     ✏️ Editar
                 </a>
@@ -38,8 +44,8 @@
                         🗑️ Desactivar
                     </button>
                 </form>
+                {% endif %}
             </div>
-            {% endif %}
         </div>
     </div>
 {% endblock %}

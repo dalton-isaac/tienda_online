@@ -16,10 +16,17 @@
                     <p class="card-text fs-4 fw-bold">
                         ${{ "%.2f"|format(producto.precio_final()) }}
                     </p>
-                    <a href="{{ url_for('detalle_producto', producto_id=producto.id) }}"
-                       class="btn btn-primary">
-                        Ver detalle
-                    </a>
+                    <div class="d-flex gap-2">
+                        <a href="{{ url_for('detalle_producto', producto_id=producto.id) }}"
+                           class="btn btn-primary flex-grow-1">
+                            Ver detalle
+                        </a>
+                        {% if session.get('usuario_rol') == 'cliente' %}
+                        <form action="{{ url_for('agregar_carrito', producto_id=producto.id) }}" method="POST">
+                            <button type="submit" class="btn btn-outline-success">🛍️</button>
+                        </form>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
