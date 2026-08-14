@@ -8,31 +8,23 @@ db = SQLAlchemy()
 class Usuario(db.Model):
     __tablename__ = 'usuarios'
     id = db.Column(db.Integer, primary_key=True)
-    nombre = db.Column(db.String(50), nullable=False)
-    email = db.Column(db.String(100), unique=True, nullable=False)
-    rol = db.Column(db.String(20), nullable=False, default='cliente')
-    contrasena_hash = db.Column(db.String(256), nullable=False)
-    fecha_creacion = db.Column(db.DateTime, default=datetime.now())
+    nombre = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password_hash = db.Column(db.String(255), nullable=False)
+    rol = db.Column(db.String(20), nullable=False, default="cliente")
+    fecha_registro = db.Column(db.DateTime, default=datetime.utcnow)
 
+    def set_password(self, password_plano):
+        self.password_hash = generate_password_hash(password_plano)
 
-    #MEtodo para establecer la contraseña del usuario, generando un hash seguro y almacenandolo en la base de datos
-    def set_contrasena(self, contrasena):
-        self.contrasena_hash = generate_password_hash(contrasena)
+    def check_password(self, password_plano):
+        return check_password_hash(self.password_hash, password_plano)
 
-    def set_password(self, contrasena):
-        self.set_contrasena(contrasena)
+    def es_admin(self):
+        return self.rol == "admin"
 
-    #Metodo para verificar la contraseña del usuario comparando el hash almacenado
-    def verificar_contrasena(self, contrasena):
-        return check_password_hash(self.contrasena_hash, contrasena)
-
-    #Metodo para verificar si el usuario es administrador
-    def es_administrador(self):
-        return self.rol == 'administrador'
-    
-    #Metodo para imprimir un objeto de la clase Usuario en formato legible
     def __repr__(self):
-        return f'<Usuario {self.nombre}>'   
+        return f"<Usuario {self.email} ({self.rol})>"   
 
 class Producto(db.Model):
     __tablename__ = 'productos'

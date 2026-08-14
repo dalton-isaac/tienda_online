@@ -26,6 +26,20 @@
                 <h5>Detalles de vencimiento</h5>
                 <p>Días para vencer: {{ producto.dias_para_vencer }}</p>
             {% endif %}
+
+            {% if session.get('usuario_id') %}
+            <hr>
+            <div>
+                <a href="{{ url_for('editar_producto', producto_id=producto.id) }}" class="btn btn-outline-primary">
+                    ✏️ Editar
+                </a>
+                <form method="POST" action="{{ url_for('eliminar_producto', producto_id=producto.id) }}" style="display:inline-block;">
+                    <button type="submit" class="btn btn-outline-danger" onclick="return confirm('¿Desactivar producto?')">
+                        🗑️ Desactivar
+                    </button>
+                </form>
+            </div>
+            {% endif %}
         </div>
     </div>
 {% endblock %}
