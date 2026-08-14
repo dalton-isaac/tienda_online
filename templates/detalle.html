@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block titulo %}{{ producto.nombre }} — Tienda Online{% endblock %}
+
+{% block content %}
+    <a href="{{ url_for('inicio') }}" class="btn btn-outline-secondary mb-3">← Volver al catálogo</a>
+
+    <div class="card">
+        <div class="card-body">
+            <span class="badge bg-secondary mb-2">{{ producto.tipo }}</span>
+            <h1>{{ producto.nombre }}</h1>
+            <p class="text-muted">Código: {{ producto.codigo }}</p>
+            <p class="fs-3 fw-bold">${{ "%.2f"|format(producto.precio_final()) }}</p>
+            <p>Stock disponible: {{ producto.stock }}</p>
+
+            {% if producto.tipo == "fisico" %}
+                <hr>
+                <h5>Detalles de envío</h5>
+                <p>Peso: {{ producto.peso_kg }} kg</p>
+            {% elif producto.tipo == "digital" %}
+                <hr>
+                <h5>Detalles de licencia</h5>
+                <p>Tipo de licencia: {{ producto.licencia|capitalize }}</p>
+            {% elif producto.tipo == "perecible" %}
+                <hr>
+                <h5>Detalles de vencimiento</h5>
+                <p>Días para vencer: {{ producto.dias_para_vencer }}</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
