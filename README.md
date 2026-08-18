@@ -91,13 +91,13 @@ La aplicación implementa un catálogo de productos con herencia de clases (Prod
 ## 📸 Capturas de Pantalla
 
 ### Catálogo de Productos
-*(Página principal mostrando las tarjetas de productos con imágenes, precios y badges de tipo)*
+![Catálogo de Productos](static/img/screenshots/catalogo.png)
 
 ### Detalle de Producto
-*(Vista detallada con imagen grande, información del producto y botones de acción)*
+![Detalle de Producto](static/img/screenshots/detalle.png)
 
 ### Carrito de Compras
-*(Tabla con productos agregados, imágenes miniatura, cantidades y total)*
+![Carrito de Compras](static/img/screenshots/carrito.png)
 
 ---
 
