@@ -19,15 +19,18 @@ with app.app_context():
     # -- Productos de prueba ---------------------------------------
     p1 = ProductoFisico(
         codigo="FIS001", nombre="Audifonos Bluetooth", precio_base=25.00,
-        stock=40, peso_kg=0.3, costo_envio_por_kg=2.50
+        stock=40, peso_kg=0.3, costo_envio_por_kg=2.50,
+        imagen="audifonos_bluetooth.jpg"
     )
     p2 = ProductoDigital(
         codigo="DIG001", nombre="Curso de Python Avanzado", precio_base=40.00,
-        stock=999, licencia="personal"
+        stock=999, licencia="personal",
+        imagen="curso_python_avanzado.jpg"
     )
     p3 = ProductoPerecible(
         codigo="PER001", nombre="Caja de fresas organicas", precio_base=8.00,
-        stock=15, dias_para_vencer=2
+        stock=15, dias_para_vencer=2,
+        imagen="caja_fresas_organicas.jpg"
     )
 
     db.session.add_all([p1, p2, p3])

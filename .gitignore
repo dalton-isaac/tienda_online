@@ -12,6 +12,9 @@ __pycache__/
 # Imágenes subidas por usuarios (se generan en producción)
 static/uploads/*
 !static/uploads/.gitkeep
+!static/uploads/audifonos_bluetooth.jpg
+!static/uploads/caja_fresas_organicas.jpg
+!static/uploads/curso_python_avanzado.jpg
 
 # Carpeta de tests cache
 tests/__pycache__/
