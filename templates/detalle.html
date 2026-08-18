@@ -3,48 +3,95 @@
 {% block titulo %}{{ producto.nombre }} — Tienda Online{% endblock %}
 
 {% block content %}
-    <a href="{{ url_for('inicio') }}" class="btn btn-outline-secondary mb-3">← Volver al catálogo</a>
+    <a href="{{ url_for('inicio') }}" class="btn btn-outline-secondary mb-3">
+        <i class="bi bi-arrow-left me-1"></i>Volver al catálogo
+    </a>
 
     <div class="card">
         <div class="card-body">
-            <span class="badge bg-secondary mb-2">{{ producto.tipo }}</span>
-            <h1>{{ producto.nombre }}</h1>
-            <p class="text-muted">Código: {{ producto.codigo }}</p>
-            <p class="fs-3 fw-bold">${{ "%.2f"|format(producto.precio_final()) }}</p>
-            <p>Stock disponible: {{ producto.stock }}</p>
+            <div class="row">
+                <!-- Imagen del producto -->
+                <div class="col-md-5 mb-3 mb-md-0">
+                    {% if producto.imagen %}
+                        <img src="{{ url_for('static', filename='uploads/' + producto.imagen) }}"
+                             class="detail-img" alt="{{ producto.nombre }}">
+                    {% else %}
+                        <img src="{{ url_for('static', filename='img/default.jpg') }}"
+                             class="detail-img" alt="Sin imagen">
+                    {% endif %}
+                </div>
 
-            {% if producto.tipo == "fisico" %}
-                <hr>
-                <h5>Detalles de envío</h5>
-                <p>Peso: {{ producto.peso_kg }} kg</p>
-            {% elif producto.tipo == "digital" %}
-                <hr>
-                <h5>Detalles de licencia</h5>
-                <p>Tipo de licencia: {{ producto.licencia|capitalize }}</p>
-            {% elif producto.tipo == "perecible" %}
-                <hr>
-                <h5>Detalles de vencimiento</h5>
-                <p>Días para vencer: {{ producto.dias_para_vencer }}</p>
-            {% endif %}
+                <!-- Información del producto -->
+                <div class="col-md-7">
+                    <span class="badge badge-tipo badge-{{ producto.tipo }} mb-2">
+                        {% if producto.tipo == 'fisico' %}
+                            <i class="bi bi-box-seam me-1"></i>
+                        {% elif producto.tipo == 'digital' %}
+                            <i class="bi bi-cloud-download me-1"></i>
+                        {% elif producto.tipo == 'perecible' %}
+                            <i class="bi bi-egg me-1"></i>
+                        {% endif %}
+                        {{ producto.tipo }}
+                    </span>
 
-            <hr>
-            <div class="d-flex gap-2">
-                {% if session.get('usuario_rol') == 'cliente' %}
-                <form action="{{ url_for('agregar_carrito', producto_id=producto.id) }}" method="POST">
-                    <button type="submit" class="btn btn-primary">🛍️ Agregar al carrito</button>
-                </form>
-                {% endif %}
-                
-                {% if session.get('usuario_rol') == 'admin' %}
-                <a href="{{ url_for('editar_producto', producto_id=producto.id) }}" class="btn btn-outline-primary">
-                    ✏️ Editar
-                </a>
-                <form method="POST" action="{{ url_for('eliminar_producto', producto_id=producto.id) }}" style="display:inline-block;">
-                    <button type="submit" class="btn btn-outline-danger" onclick="return confirm('¿Desactivar producto?')">
-                        🗑️ Desactivar
-                    </button>
-                </form>
-                {% endif %}
+                    <h1>{{ producto.nombre }}</h1>
+                    <p class="text-muted">
+                        <i class="bi bi-upc me-1"></i>Código: {{ producto.codigo }}
+                    </p>
+                    <p class="precio">${{ "%.2f"|format(producto.precio_final()) }}</p>
+                    <p>
+                        <i class="bi bi-boxes me-1"></i>
+                        Stock disponible: <strong>{{ producto.stock }}</strong> unidades
+                    </p>
+
+                    {% if producto.tipo == "fisico" %}
+                        <hr>
+                        <h5><i class="bi bi-truck me-1"></i>Detalles de envío</h5>
+                        <p>Peso: {{ producto.peso_kg }} kg</p>
+                        <p>Costo de envío incluido en el precio final.</p>
+                    {% elif producto.tipo == "digital" %}
+                        <hr>
+                        <h5><i class="bi bi-key me-1"></i>Detalles de licencia</h5>
+                        <p>Tipo de licencia: <strong>{{ producto.licencia|capitalize }}</strong></p>
+                    {% elif producto.tipo == "perecible" %}
+                        <hr>
+                        <h5><i class="bi bi-clock-history me-1"></i>Detalles de vencimiento</h5>
+                        <p>Días para vencer: <strong>{{ producto.dias_para_vencer }}</strong></p>
+                        {% if producto.dias_para_vencer <= 3 %}
+                            <div class="alert alert-danger py-2">
+                                <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                                ¡Próximo a vencer! Descuento del 50% aplicado.
+                            </div>
+                        {% elif producto.dias_para_vencer <= 7 %}
+                            <div class="alert alert-warning py-2">
+                                <i class="bi bi-exclamation-circle me-1"></i>
+                                Vence pronto. Descuento del 20% aplicado.
+                            </div>
+                        {% endif %}
+                    {% endif %}
+
+                    <hr>
+                    <div class="d-flex gap-2 flex-wrap">
+                        {% if session.get('usuario_rol') == 'cliente' %}
+                        <form action="{{ url_for('agregar_carrito', producto_id=producto.id) }}" method="POST">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-cart-plus me-1"></i>Agregar al carrito
+                            </button>
+                        </form>
+                        {% endif %}
+                        
+                        {% if session.get('usuario_rol') == 'admin' %}
+                        <a href="{{ url_for('editar_producto', producto_id=producto.id) }}" class="btn btn-outline-primary">
+                            <i class="bi bi-pencil me-1"></i>Editar
+                        </a>
+                        <form method="POST" action="{{ url_for('eliminar_producto', producto_id=producto.id) }}" style="display:inline-block;">
+                            <button type="submit" class="btn btn-outline-danger" onclick="return confirm('¿Desactivar producto?')">
+                                <i class="bi bi-trash me-1"></i>Desactivar
+                            </button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
         </div>
     </div>

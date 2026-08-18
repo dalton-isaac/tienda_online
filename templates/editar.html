@@ -3,17 +3,22 @@
 {% block titulo %}Editar {{ producto.nombre }}{% endblock %}
 
 {% block content %}
-    <a href="{{ url_for('detalle_producto', producto_id=producto.id) }}" class="btn btn-outline-secondary mb-3">← Cancelar</a>
+    <a href="{{ url_for('detalle_producto', producto_id=producto.id) }}" class="btn btn-outline-secondary mb-3">
+        <i class="bi bi-arrow-left me-1"></i>Cancelar
+    </a>
 
     <div class="card">
         <div class="card-body">
-            <h2 class="mb-1">✏️ Editar Producto</h2>
+            <h2 class="mb-1">
+                <i class="bi bi-pencil-square me-2" style="color: var(--color-primario);"></i>
+                Editar Producto
+            </h2>
             <p class="text-muted mb-4">
-                <span class="badge bg-secondary">{{ producto.tipo }}</span>
+                <span class="badge badge-tipo badge-{{ producto.tipo }}">{{ producto.tipo }}</span>
                 Código: {{ producto.codigo }} (no editable)
             </p>
 
-            <form method="POST">
+            <form method="POST" enctype="multipart/form-data">
                 <div class="mb-3">
                     <label class="form-label">Nombre</label>
                     <input type="text" class="form-control" name="nombre" value="{{ producto.nombre }}" required>
@@ -32,12 +37,38 @@
                     </div>
                 </div>
 
+                <!-- Imagen actual y campo para cambiar -->
+                <div class="mb-4">
+                    <label class="form-label">Imagen del producto</label>
+                    {% if producto.imagen %}
+                        <div class="mb-2">
+                            <p class="text-muted mb-1">
+                                <small><i class="bi bi-image me-1"></i>Imagen actual:</small>
+                            </p>
+                            <img src="{{ url_for('static', filename='uploads/' + producto.imagen) }}"
+                                 class="img-preview" alt="Imagen actual">
+                        </div>
+                    {% else %}
+                        <p class="text-muted mb-1">
+                            <small><i class="bi bi-image me-1"></i>Sin imagen cargada (se muestra la imagen por defecto)</small>
+                        </p>
+                    {% endif %}
+                    <input type="file" class="form-control" name="imagen" accept="image/*">
+                    <small class="text-muted">
+                        <i class="bi bi-info-circle me-1"></i>
+                        Selecciona una nueva imagen para reemplazar la actual. Déjalo vacío para mantener la actual.
+                    </small>
+                </div>
+
                 <div class="alert alert-info">
+                    <i class="bi bi-info-circle-fill me-2"></i>
                     Nota: los campos específicos del tipo de producto (peso, licencia, días de vencimiento)
                     no se editan aquí en esta versión — solo los datos generales.
                 </div>
 
-                <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-lg me-1"></i>Guardar cambios
+                </button>
             </form>
         </div>
     </div>

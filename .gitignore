@@ -1,0 +1,17 @@
+# Entorno virtual
+venv/
+
+# Variables de entorno (contiene contraseñas)
+.env
+
+# Archivos compilados de Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Imágenes subidas por usuarios (se generan en producción)
+static/uploads/*
+!static/uploads/.gitkeep
+
+# Carpeta de tests cache
+tests/__pycache__/

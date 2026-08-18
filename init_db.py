@@ -3,11 +3,11 @@ from models import db, ProductoFisico, ProductoDigital, ProductoPerecible, Usuar
 
 with app.app_context():
     print("Creando tablas...")
-    db.drop_all()   # Borra todo si ya existía (útil mientras desarrollan)
+    db.drop_all()   # Borra todo si ya existia (util mientras desarrollan)
     db.create_all()
-    print("✔ Tablas creadas.")
+    print("[OK] Tablas creadas.")
 
-    # ── Usuarios de prueba ────────────────────────────────────
+    # -- Usuarios de prueba ----------------------------------------
     admin = Usuario(nombre="Admin Principal", email="admin@tienda.com", rol="admin")
     admin.set_password("admin123")
 
@@ -16,9 +16,9 @@ with app.app_context():
 
     db.session.add_all([admin, cliente])
 
-    # ── Productos de prueba ─────────────────────────────────────
+    # -- Productos de prueba ---------------------------------------
     p1 = ProductoFisico(
-        codigo="FIS001", nombre="Audífonos Bluetooth", precio_base=25.00,
+        codigo="FIS001", nombre="Audifonos Bluetooth", precio_base=25.00,
         stock=40, peso_kg=0.3, costo_envio_por_kg=2.50
     )
     p2 = ProductoDigital(
@@ -26,14 +26,15 @@ with app.app_context():
         stock=999, licencia="personal"
     )
     p3 = ProductoPerecible(
-        codigo="PER001", nombre="Caja de fresas orgánicas", precio_base=8.00,
+        codigo="PER001", nombre="Caja de fresas organicas", precio_base=8.00,
         stock=15, dias_para_vencer=2
     )
 
     db.session.add_all([p1, p2, p3])
     db.session.commit()
 
-    print("✔ Usuarios y productos de prueba insertados.")
-    print("\nCredenciales de prueba:")
-    print("  Admin   → admin@tienda.com   / admin123")
-    print("  Cliente → cliente@tienda.com / cliente123")
+    print("[OK] Usuarios y productos de prueba insertados.")
+    print("")
+    print("Credenciales de prueba:")
+    print("  Admin   -> admin@tienda.com   / admin123")
+    print("  Cliente -> cliente@tienda.com / cliente123")

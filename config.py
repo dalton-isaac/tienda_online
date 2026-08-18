@@ -4,6 +4,9 @@ from dotenv import load_dotenv
 # Cargar las variables de entorno desde el archivo .env
 load_dotenv()
 
+# Ruta base del proyecto
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+
 
 class Config:
     """Configuración central de la aplicación."""
@@ -24,3 +27,8 @@ class Config:
 
     # Clave secreta para sesiones de Flask
     SECRET_KEY = os.getenv('SECRET_KEY', 'clave-de-desarrollo-temporal')
+
+    # Configuración para subida de imágenes
+    UPLOAD_FOLDER = os.path.join(BASE_DIR, 'static', 'uploads')
+    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
+

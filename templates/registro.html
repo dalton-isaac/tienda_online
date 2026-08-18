@@ -3,37 +3,51 @@
 {% block titulo %}Crear Cuenta{% endblock %}
 
 {% block content %}
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-body">
-                    <h2 class="mb-4">Crear Cuenta</h2>
-
-                    <form method="POST">
-                        <div class="mb-3">
-                            <label class="form-label">Nombre completo</label>
-                            <input type="text" class="form-control" name="nombre" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Correo electrónico</label>
-                            <input type="email" class="form-control" name="email" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Contraseña</label>
-                            <input type="password" class="form-control" name="password"
-                                   minlength="6" required>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary w-100">Registrarme</button>
-                    </form>
-
-                    <p class="text-center mt-3 mb-0">
-                        ¿Ya tienes cuenta?
-                        <a href="{{ url_for('login') }}">Inicia sesión</a>
-                    </p>
+    <div class="auth-card">
+        <div class="card">
+            <div class="card-body p-4">
+                <div class="text-center mb-4">
+                    <i class="bi bi-person-plus-fill" style="font-size: 3rem; color: var(--color-primario);"></i>
+                    <h2 class="mt-2">Crear Cuenta</h2>
+                    <p class="text-muted">Regístrate para comenzar a comprar</p>
                 </div>
+
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i class="bi bi-person me-1"></i>Nombre completo
+                        </label>
+                        <input type="text" class="form-control" name="nombre"
+                               placeholder="Tu nombre completo" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i class="bi bi-envelope me-1"></i>Correo electrónico
+                        </label>
+                        <input type="email" class="form-control" name="email"
+                               placeholder="tu@correo.com" required>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">
+                            <i class="bi bi-lock me-1"></i>Contraseña
+                        </label>
+                        <input type="password" class="form-control" name="password"
+                               minlength="6" placeholder="Mínimo 6 caracteres" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-person-plus me-1"></i>Registrarme
+                    </button>
+                </form>
+
+                <p class="text-center mt-3 mb-0">
+                    ¿Ya tienes cuenta?
+                    <a href="{{ url_for('login') }}" style="color: var(--color-primario); font-weight: 600;">
+                        Inicia sesión
+                    </a>
+                </p>
             </div>
         </div>
     </div>

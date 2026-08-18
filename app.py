@@ -5,7 +5,10 @@ Punto de entrada de la aplicación. Aquí se crea la app de Flask,
 se conecta con la base de datos, y se definen las rutas (URLs).
 """
 
+import os
+import uuid
 from flask import Flask, render_template, request, redirect, url_for, session, flash
+from werkzeug.utils import secure_filename
 from config import Config
 from models import db, Producto, ProductoFisico, ProductoDigital, ProductoPerecible, Usuario
 from auth import login_requerido, rol_requerido
@@ -15,6 +18,39 @@ app.config.from_object(Config)
 
 # Conecta esta app con la instancia de SQLAlchemy definida en models.py
 db.init_app(app)
+
+# Asegura que la carpeta de uploads exista
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+
+
+# ═══════════════════════════════════════════════════════════════
+# UTILIDADES PARA SUBIDA DE IMÁGENES (Parte 2)
+# ═══════════════════════════════════════════════════════════════
+
+def extensiones_permitidas(nombre_archivo):
+    """Verifica si la extensión del archivo está permitida."""
+    return '.' in nombre_archivo and \
+           nombre_archivo.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
+
+
+def guardar_imagen(archivo):
+    """
+    Procesa y guarda un archivo de imagen subido.
+    Retorna el nombre del archivo guardado, o None si no se subió.
+    """
+    if archivo and archivo.filename != '':
+        if extensiones_permitidas(archivo.filename):
+            # Generar un nombre seguro y único para evitar colisiones
+            nombre_original = secure_filename(archivo.filename)
+            extension = nombre_original.rsplit('.', 1)[1].lower()
+            nombre_unico = f"{uuid.uuid4().hex}.{extension}"
+
+            ruta_destino = os.path.join(app.config['UPLOAD_FOLDER'], nombre_unico)
+            archivo.save(ruta_destino)
+            return nombre_unico
+        else:
+            flash("Formato de imagen no permitido. Usa: png, jpg, jpeg, gif, webp.", "warning")
+    return None
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -97,7 +133,7 @@ def logout():
 
 
 # ═══════════════════════════════════════════════════════════════
-# RUTAS CRUD - CREAR PRODUCTOS (Semana 2)
+# RUTAS CRUD - CREAR PRODUCTOS (Semana 2) + Imágenes (Parte 2)
 # ═══════════════════════════════════════════════════════════════
 
 @app.route("/productos/nuevo/fisico", methods=["GET", "POST"])
@@ -106,6 +142,9 @@ def nuevo_producto_fisico():
     """Crear nuevo producto físico."""
     if request.method == "POST":
         try:
+            # Procesar imagen si se subió una
+            nombre_imagen = guardar_imagen(request.files.get('imagen'))
+
             producto = ProductoFisico(
                 codigo=request.form["codigo"],
                 nombre=request.form["nombre"],
@@ -113,6 +152,7 @@ def nuevo_producto_fisico():
                 stock=int(request.form["stock"]),
                 peso_kg=float(request.form["peso_kg"]),
                 costo_envio_por_kg=float(request.form["costo_envio_por_kg"]),
+                imagen=nombre_imagen,
             )
             db.session.add(producto)
             db.session.commit()
@@ -133,12 +173,15 @@ def nuevo_producto_digital():
     """Crear nuevo producto digital."""
     if request.method == "POST":
         try:
+            nombre_imagen = guardar_imagen(request.files.get('imagen'))
+
             producto = ProductoDigital(
                 codigo=request.form["codigo"],
                 nombre=request.form["nombre"],
                 precio_base=float(request.form["precio_base"]),
                 stock=int(request.form["stock"]),
                 licencia=request.form["licencia"],
+                imagen=nombre_imagen,
             )
             db.session.add(producto)
             db.session.commit()
@@ -159,12 +202,15 @@ def nuevo_producto_perecible():
     """Crear nuevo producto perecible."""
     if request.method == "POST":
         try:
+            nombre_imagen = guardar_imagen(request.files.get('imagen'))
+
             producto = ProductoPerecible(
                 codigo=request.form["codigo"],
                 nombre=request.form["nombre"],
                 precio_base=float(request.form["precio_base"]),
                 stock=int(request.form["stock"]),
                 dias_para_vencer=int(request.form["dias_para_vencer"]),
+                imagen=nombre_imagen,
             )
             db.session.add(producto)
             db.session.commit()
@@ -180,7 +226,7 @@ def nuevo_producto_perecible():
 
 
 # ═══════════════════════════════════════════════════════════════
-# RUTAS CRUD - EDITAR PRODUCTOS (Semana 2)
+# RUTAS CRUD - EDITAR PRODUCTOS (Semana 2) + Imágenes (Parte 2)
 # ═══════════════════════════════════════════════════════════════
 
 @app.route("/productos/<int:producto_id>/editar", methods=["GET", "POST"])
@@ -194,6 +240,17 @@ def editar_producto(producto_id):
             producto.nombre = request.form["nombre"]
             producto.precio_base = float(request.form["precio_base"])
             producto.stock = int(request.form["stock"])
+
+            # Procesar nueva imagen si se subió una
+            nueva_imagen = guardar_imagen(request.files.get('imagen'))
+            if nueva_imagen:
+                # Eliminar imagen anterior si existía
+                if producto.imagen:
+                    ruta_anterior = os.path.join(app.config['UPLOAD_FOLDER'], producto.imagen)
+                    if os.path.exists(ruta_anterior):
+                        os.remove(ruta_anterior)
+                producto.imagen = nueva_imagen
+
             db.session.commit()
             flash("Producto actualizado correctamente.", "success")
             return redirect(url_for("detalle_producto", producto_id=producto.id))
